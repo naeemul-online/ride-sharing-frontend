@@ -1,10 +1,7 @@
 import {
-  BoltIcon,
   BookOpenIcon,
   ChevronDownIcon,
-  Layers2Icon,
   LogOutIcon,
-  PinIcon,
   UserPenIcon,
 } from "lucide-react";
 
@@ -31,7 +28,7 @@ export default function Profile() {
   const [logout] = useLogoutMutation();
   const { data: userInfo } = useUserInfoQuery(undefined);
 
-  console.log(userInfo?.data);
+  console.log(userInfo?.data?.role);
 
   const dispatch = useAppDispatch();
   const handleLogout = async () => {
@@ -69,28 +66,45 @@ export default function Profile() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
+          {/* <DropdownMenuItem>
             <BoltIcon size={16} className="opacity-60" aria-hidden="true" />
-            <span>Option 1</span>
+            <span>Help</span>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Layers2Icon size={16} className="opacity-60" aria-hidden="true" />
-            <span>Option 2</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <BookOpenIcon size={16} className="opacity-60" aria-hidden="true" />
-            <span>Option 3</span>
-          </DropdownMenuItem>
+            <span>Wallet</span>
+          </DropdownMenuItem> */}
+
+          {userInfo?.data?.role === "admin" ||
+          userInfo?.data?.role === "super_admin" ? (
+            <DropdownMenuItem>
+              <BookOpenIcon
+                size={16}
+                className="opacity-60"
+                aria-hidden="true"
+              />
+              <span>Dashboard</span>
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem>
+              <BookOpenIcon
+                size={16}
+                className="opacity-60"
+                aria-hidden="true"
+              />
+              <span>Activity</span>
+            </DropdownMenuItem>
+          )}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
+          {/* <DropdownMenuItem>
             <PinIcon size={16} className="opacity-60" aria-hidden="true" />
-            <span>Option 4</span>
-          </DropdownMenuItem>
+            <span>Promotion</span>
+          </DropdownMenuItem> */}
           <DropdownMenuItem>
             <UserPenIcon size={16} className="opacity-60" aria-hidden="true" />
-            <span>Option 5</span>
+            <span>Manage Account</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
