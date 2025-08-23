@@ -1,9 +1,4 @@
-import {
-  BookOpenIcon,
-  ChevronDownIcon,
-  LogOutIcon,
-  UserPenIcon,
-} from "lucide-react";
+import { BookOpenIcon, ChevronDownIcon, LogOutIcon } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -22,6 +17,7 @@ import {
   useUserInfoQuery,
 } from "@/redux/features/auth/auth.api";
 import { useAppDispatch } from "@/redux/hook";
+import { Link } from "react-router";
 import { toast } from "sonner";
 
 export default function Profile() {
@@ -75,39 +71,57 @@ export default function Profile() {
             <span>Wallet</span>
           </DropdownMenuItem> */}
 
-          {userInfo?.data?.role === "admin" ||
-          userInfo?.data?.role === "super_admin" ? (
-            <DropdownMenuItem>
-              <BookOpenIcon
-                size={16}
-                className="opacity-60"
-                aria-hidden="true"
-              />
-              <span>Dashboard</span>
-            </DropdownMenuItem>
-          ) : (
-            <DropdownMenuItem>
-              <BookOpenIcon
-                size={16}
-                className="opacity-60"
-                aria-hidden="true"
-              />
-              <span>Activity</span>
-            </DropdownMenuItem>
+          {userInfo?.data?.role === "admin" && (
+            <Link to="admin">
+              <DropdownMenuItem>
+                <BookOpenIcon
+                  size={16}
+                  className="opacity-60"
+                  aria-hidden="true"
+                />
+                <span>Dashboard</span>
+              </DropdownMenuItem>
+            </Link>
+          )}
+
+          {userInfo?.data?.role === "super_admin" && (
+            <Link to="admin">
+              <DropdownMenuItem>
+                <BookOpenIcon
+                  size={16}
+                  className="opacity-60"
+                  aria-hidden="true"
+                />
+                <span>Dashboard</span>
+              </DropdownMenuItem>
+            </Link>
+          )}
+          {userInfo?.data?.role === "driver" && (
+            <Link to="driver">
+              <DropdownMenuItem>
+                <BookOpenIcon
+                  size={16}
+                  className="opacity-60"
+                  aria-hidden="true"
+                />
+                <span>Dashboard</span>
+              </DropdownMenuItem>
+            </Link>
+          )}
+          {userInfo?.data?.role === "rider" && (
+            <Link to="rider">
+              <DropdownMenuItem>
+                <BookOpenIcon
+                  size={16}
+                  className="opacity-60"
+                  aria-hidden="true"
+                />
+                <span>Dashboard</span>
+              </DropdownMenuItem>
+            </Link>
           )}
         </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          {/* <DropdownMenuItem>
-            <PinIcon size={16} className="opacity-60" aria-hidden="true" />
-            <span>Promotion</span>
-          </DropdownMenuItem> */}
-          <DropdownMenuItem>
-            <UserPenIcon size={16} className="opacity-60" aria-hidden="true" />
-            <span>Manage Account</span>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
+
         <DropdownMenuItem onClick={() => handleLogout()}>
           <LogOutIcon size={16} className="opacity-60" aria-hidden="true" />
           <span>Logout</span>
