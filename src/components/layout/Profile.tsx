@@ -1,6 +1,5 @@
 import { BookOpenIcon, ChevronDownIcon, LogOutIcon } from "lucide-react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -16,13 +15,19 @@ import {
   useLogoutMutation,
   useUserInfoQuery,
 } from "@/redux/features/auth/auth.api";
+import { useDriverInfoQuery } from "@/redux/features/driver/driver.api";
 import { useAppDispatch } from "@/redux/hook";
 import { Link } from "react-router";
 import { toast } from "sonner";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export default function Profile() {
   const [logout] = useLogoutMutation();
   const { data: userInfo } = useUserInfoQuery(undefined);
+  const { data: driverInfo } = useDriverInfoQuery(undefined);
+  const activeStatus = driverInfo?.data[0]?.isOnline;
+
+  console.log(activeStatus);
 
   console.log(userInfo?.data?.role);
 
@@ -37,13 +42,24 @@ export default function Profile() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="h-auto p-0 hover:bg-transparent">
-          <Avatar>
-            <AvatarImage
-              src="https://github.com/shadcn.png"
-              alt="Profile image"
-            />
-            <AvatarFallback>DD</AvatarFallback>
-          </Avatar>
+          <div className="relative">
+            <Avatar>
+              <AvatarImage
+                src="https://github.com/shadcn.png"
+                alt="Kelly King"
+              />
+              <AvatarFallback>KK</AvatarFallback>
+            </Avatar>
+            {userInfo?.data?.role === "driver" && (
+              <span
+                className={`border-background absolute -end-0.5 -bottom-0.5 size-3 rounded-full border-2 ${
+                  activeStatus ? "bg-emerald-500" : "bg-muted-foreground"
+                } `}
+              >
+                <span className="sr-only">Offline</span>
+              </span>
+            )}
+          </div>
           <ChevronDownIcon
             size={16}
             className="opacity-60"

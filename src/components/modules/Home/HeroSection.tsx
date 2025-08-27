@@ -1,10 +1,13 @@
 import { Button } from "@/components/ui/button";
 
 import heroImage from "@/assets/hero-image.png";
+import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
 import { ArrowRight, Badge } from "lucide-react";
 import { Link } from "react-router";
 
 export default function HeroSection() {
+  const { data: userInfo } = useUserInfoQuery(undefined);
+
   return (
     <section className="relative pt-16 pb-20 lg:pt-24 lg:pb-28 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-hero opacity-10 z-[-1]"></div>
@@ -23,7 +26,7 @@ export default function HeroSection() {
               them.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
-              <Link to="/ride">
+              <Link to="/ride-request">
                 <Button
                   size="lg"
                   className="bg-primary hover:shadow-primary text-lg px-8 py-3 cursor-pointer"
@@ -32,16 +35,31 @@ export default function HeroSection() {
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </Link>
-
-              <Link to="/register">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="text-lg px-8 py-3 cursor-pointer"
-                >
-                  Become a Driver
-                </Button>
-              </Link>
+              {userInfo?.data?.role === "driver" ? (
+                <>
+                  <Link to="/vehicles">
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="text-lg px-8 py-3 cursor-pointer"
+                    >
+                      Add Your Vehicles
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link to="/register">
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="text-lg px-8 py-3 cursor-pointer"
+                    >
+                      Become a Driver
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
             <div className="mt-12 grid grid-cols-3 gap-8">
               <div className="text-center">
