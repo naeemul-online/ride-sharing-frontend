@@ -30,7 +30,7 @@ export default function Navbar() {
   const { data } = useUserInfoQuery(undefined);
 
   return (
-    <header className="py-3 w-full border-b-2 bg-black text-white fixed z-1000 top-0 left-0">
+    <header className="py-3 w-full border-b-2 bg-foreground text-primary-foreground dark:bg-black dark:text-primary-foreground fixed z-1000 top-0 left-0">
       <div className="flex items-center justify-between gap-4 max-w-7xl mx-auto md:px-16">
         {/* Left side */}
         <div className="flex items-center gap-2">
@@ -117,9 +117,6 @@ export default function Navbar() {
             <>
               <Button asChild size="sm" className="text-sm">
                 <Link to="/login">Login</Link>
-              </Button>
-              <Button asChild size="sm" className="text-sm">
-                <Link to="/register">Sign up</Link>
               </Button>
             </>
           )}
