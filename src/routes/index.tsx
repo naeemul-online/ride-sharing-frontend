@@ -8,8 +8,10 @@ import ErrorPage from "@/pages/ErrorPage";
 import Features from "@/pages/Features";
 
 import { role } from "@/constant/role";
+import VehicleRegistration from "@/pages/driver/VehiclesRegistration";
 import Home from "@/pages/Home";
-import Ride from "@/pages/Ride/Ride";
+import RequestRidePage from "@/pages/rider/RequestRidePage";
+import Ride from "@/pages/rider/Ride";
 import type { TRole } from "@/types";
 import { generateRoutes } from "@/utils/generateRoute";
 import { withAuth } from "@/utils/withAuth";
@@ -29,6 +31,8 @@ export const router = createBrowserRouter([
       { path: "features", Component: Features },
       { path: "contact", Component: Contact },
       { path: "faq", Component: Features },
+      { path: "ride-request", Component: RequestRidePage },
+      { path: "/vehicles", Component: VehicleRegistration },
     ],
   },
   {
@@ -49,6 +53,7 @@ export const router = createBrowserRouter([
       ...generateRoutes(riderSidebarItems),
     ],
   },
+
   {
     path: "/driver",
     Component: withAuth(DashboardLayout, role.driver as TRole),

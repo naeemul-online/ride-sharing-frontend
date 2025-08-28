@@ -10,20 +10,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Password from "@/components/ui/Password";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 import { cn } from "@/lib/utils";
-import { useRegisterMutation } from "@/redux/features/auth/auth.api";
+import {
+  useUpdateProfileMutation,
+  useUserInfoQuery,
+} from "@/redux/features/auth/auth.api";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -37,9 +33,6 @@ const registerSchema = z
       .max(50),
 
     email: z.email(),
-    role: z.string({
-      error: "Please select a role to register.",
-    }),
 
     password: z.string().min(8, { error: "Password is too short" }),
     confirmPassword: z
@@ -51,18 +44,18 @@ const registerSchema = z
     path: ["confirmPassword"],
   });
 
-export function RegisterForm({
+export default function RiderProfileManagement({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-  const navigate = useNavigate();
+  const { data: userInfo } = useUserInfoQuery(undefined);
+  const [updateProfile] = useUpdateProfileMutation();
 
-  const [register] = useRegisterMutation();
+  //   console.log(userInfo?.data?._id);
 
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      role: "",
       name: "",
       email: "",
       password: "",
@@ -70,61 +63,50 @@ export function RegisterForm({
     },
   });
 
+  useEffect(() => {
+    if (userInfo?.data) {
+      form.reset({
+        name: userInfo.data.name,
+        email: userInfo.data.email,
+        password: "",
+        confirmPassword: "",
+      });
+    }
+  }, [userInfo, form]);
+
   const onSubmit = async (data: z.infer<typeof registerSchema>) => {
-    const userInfo = {
-      role: data.role,
+    const updateUserInfo = {
       name: data.name,
-      email: data.email,
       password: data.password,
+      id: userInfo?.data?._id,
     };
 
-    console.log(userInfo);
+    console.log(updateUserInfo);
 
     try {
-      await register(userInfo).unwrap();
-      toast.success("User created successfully");
-      navigate("/");
+      await updateProfile(updateUserInfo);
+      toast.success("User Update successfully");
     } catch (error) {
-      toast.error(`${error?.data?.message}`);
+      console.log(error);
+      //   toast.error(`${error?.data?.message}`);
     }
   };
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div
+      className={cn("flex flex-col gap-6 md:w-1/3 mx-auto", className)}
+      {...props}
+    >
       <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-bold">Register your account</h1>
+        <h1 className="text-2xl font-bold">Update your Profile</h1>
         <p className="text-sm text-muted-foreground">
-          Enter your details to create an account
+          Enter your details to update your Profile
         </p>
       </div>
 
-      <div className="grid gap-6">
+      <div className="grid gap-6 ">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-            <FormField
-              control={form.control}
-              name="role"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Register As</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl className="w-full">
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Role" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="rider">Rider</SelectItem>
-                      <SelectItem value="driver">Driver</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <FormField
               control={form.control}
               name="name"
@@ -148,7 +130,7 @@ export function RegisterForm({
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="email" {...field} />
+                    <Input type="email" {...field} disabled />
                   </FormControl>
                   <FormDescription className="sr-only">
                     This is your public display name.
@@ -189,33 +171,11 @@ export function RegisterForm({
                 </FormItem>
               )}
             />
-
             <Button type="submit" className="w-full">
-              Submit
+              Update
             </Button>
           </form>
         </Form>
-
-        <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-          <span className="relative z-10 bg-background px-2 text-muted-foreground">
-            Or continue with
-          </span>
-        </div>
-
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full cursor-pointer"
-        >
-          Login with Google
-        </Button>
-      </div>
-
-      <div className="text-center text-sm">
-        Already have an account?{" "}
-        <Link to="/login" className="underline underline-offset-4">
-          Login
-        </Link>
       </div>
     </div>
   );
