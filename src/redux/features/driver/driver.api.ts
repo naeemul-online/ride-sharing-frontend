@@ -17,6 +17,7 @@ export const driverApi = baseApi.injectEndpoints({
         data: userInfo,
       }),
     }),
+
     activeStatus: builder.mutation({
       query: (activeData) => ({
         url: "/driver/status",

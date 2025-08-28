@@ -29,8 +29,6 @@ export default function Profile() {
 
   console.log(activeStatus);
 
-  console.log(userInfo?.data?.role);
-
   const dispatch = useAppDispatch();
   const handleLogout = async () => {
     await logout(undefined);

@@ -1,4 +1,5 @@
-import AllUsers from "@/pages/admin/All Users";
+import AllDrivers from "@/pages/admin/AllDrivers";
+import AllUsers from "@/pages/admin/AllUsers";
 import Analytics from "@/pages/admin/Analytics";
 import type { ISidebarItem } from "@/types";
 
@@ -20,6 +21,16 @@ export const adminSidebarItems: ISidebarItem[] = [
         title: "Manage Users",
         url: "/admin/all-users",
         component: AllUsers,
+      },
+    ],
+  },
+  {
+    title: "All Drivers",
+    items: [
+      {
+        title: "Manage Drivers",
+        url: "/admin/all-drivers",
+        component: AllDrivers,
       },
     ],
   },

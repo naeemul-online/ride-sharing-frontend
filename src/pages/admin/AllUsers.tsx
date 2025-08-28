@@ -49,7 +49,7 @@ export default function AllUsers() {
   });
 
   const [deleteUser] = useDeleteUserMutation();
-  const [updateUserStatus] = useUpdateUserStatusMutation();
+  const [updateActiveStatus] = useUpdateUserStatusMutation();
 
   const users = data?.data || [];
   const meta = data?.meta;
@@ -66,12 +66,11 @@ export default function AllUsers() {
 
   const handleBlockUnblock = async (id: string, currentStatus: string) => {
     const newStatus = currentStatus === "active" ? "blocked" : "active";
-    const updateStatus = {
-      id: id,
-      status: newStatus,
-    };
+
+    const updateStatus = { id, status: newStatus };
+
     try {
-      await updateUserStatus(updateStatus).unwrap();
+      await updateActiveStatus(updateStatus).unwrap();
     } catch (err) {
       console.error("Failed to update status:", err);
     }

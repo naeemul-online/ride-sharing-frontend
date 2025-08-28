@@ -27,13 +27,38 @@ export const adminApi = baseApi.injectEndpoints({
       providesTags: ["USER"],
     }),
 
+    allDrivers: builder.query({
+      query: () => ({
+        url: "user/drivers",
+        method: "GET",
+      }),
+      providesTags: ["DRIVER"],
+    }),
+
+    allRides: builder.query({
+      query: () => ({
+        url: "/user/rides",
+        method: "GET",
+      }),
+      providesTags: ["USER"],
+    }),
+
     updateUserStatus: builder.mutation({
-      query: ({ id, updateData }) => ({
+      query: ({ id, status }) => ({
         url: `/user/${id}/status`,
         method: "PATCH",
-        data: updateData,
+        data: { status },
       }),
       invalidatesTags: ["USER"],
+    }),
+
+    updateDriverApprovalStatus: builder.mutation({
+      query: ({ id, approvalStatus }) => ({
+        url: `/user/${id}/approve`,
+        method: "PATCH",
+        data: { approvalStatus },
+      }),
+      invalidatesTags: ["DRIVER"],
     }),
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -52,4 +77,6 @@ export const {
   useAllStatsQuery,
   useDeleteUserMutation,
   useUpdateUserStatusMutation,
+  useAllDriversQuery,
+  useUpdateDriverApprovalStatusMutation,
 } = adminApi;

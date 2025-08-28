@@ -81,8 +81,6 @@ export default function DriverUpdateProfile({
       id: userInfo?.data?._id,
     };
 
-    console.log(updateUserInfo);
-
     try {
       await updateProfile(updateUserInfo);
       toast.success("User Update successfully");
