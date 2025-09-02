@@ -11,7 +11,7 @@ import { role } from "@/constant/role";
 import VehicleRegistration from "@/pages/driver/VehiclesRegistration";
 import Home from "@/pages/Home";
 import RequestRidePage from "@/pages/rider/RequestRidePage";
-import Ride from "@/pages/rider/Ride";
+
 import type { TRole } from "@/types";
 import { generateRoutes } from "@/utils/generateRoute";
 import { withAuth } from "@/utils/withAuth";
@@ -49,7 +49,7 @@ export const router = createBrowserRouter([
     Component: withAuth(DashboardLayout, role.rider as TRole),
     ErrorBoundary: ErrorPage,
     children: [
-      { index: true, element: <Navigate to="/rider/analytics" /> },
+      { index: true, element: <Navigate to="/rider/history" /> },
       ...generateRoutes(riderSidebarItems),
     ],
   },
@@ -68,10 +68,7 @@ export const router = createBrowserRouter([
     path: "/login",
     Component: Login,
   },
-  {
-    path: "/ride",
-    Component: Ride,
-  },
+
   {
     path: "/register",
     Component: SignUp,

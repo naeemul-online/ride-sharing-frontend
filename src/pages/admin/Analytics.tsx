@@ -1,11 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useAllStatsQuery } from "@/redux/features/admin/admin.api";
 
 export default function Analytics() {
   const { data, isLoading } = useAllStatsQuery(undefined);
 
   console.log(data?.data);
-  if (isLoading) return <h2>Loading....</h2>;
+  if (isLoading)
+    return <Skeleton className="h-[20px] w-[100px] rounded-full" />;
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
       <div className="container mx-auto px-4 py-8">

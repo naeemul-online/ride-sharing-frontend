@@ -81,8 +81,8 @@ const VehicleRegistration = () => {
         "Vehicle Registered Successfully! Your vehicle has been registered and is pending approval."
       );
       navigate("/driver/status");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      console.log(error);
       toast.error("Some thing went wrong!");
     }
   };
@@ -232,7 +232,7 @@ const VehicleRegistration = () => {
                     <strong className="text-foreground">Note:</strong> Your
                     vehicle registration will be reviewed by our team. You'll
                     receive a notification once your vehicle is approved and you
-                    can start accepting rides.
+                    can start accepting rides.{" "}
                   </p>
                 </div>
               </div>

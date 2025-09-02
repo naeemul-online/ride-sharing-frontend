@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -76,7 +77,8 @@ export default function AllUsers() {
     }
   };
 
-  if (isLoading) return <p>Loading users...</p>;
+  if (isLoading)
+    return <Skeleton className="h-[20px] w-[100px] rounded-full" />;
   if (error) return <p className="text-red-500">Failed to load users</p>;
 
   return (
