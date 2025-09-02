@@ -8,18 +8,16 @@ import { useEffect, useId, useState } from "react";
 export default function ActiveStatusSwitch() {
   const id = useId();
 
-  const { data, isLoading } = useDriverInfoQuery(undefined);
-  console.log(data?.data?.[0].isOnline);
+  const { data: activeData, isLoading } = useDriverInfoQuery(undefined);
 
   const [activeStatusSwitch] = useActiveStatusMutation();
+  const [checked, setChecked] = useState(null);
 
-  const [checked, setChecked] = useState(false);
-
-  useEffect(() => {
-    if (data?.data?.[0].isOnline !== undefined) {
-      setChecked(data?.data?.[0].isOnline);
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (activeData?.data?.[0].isOnline !== undefined) {
+  //     setChecked(activeData?.data?.[0].isOnline);
+  //   }
+  // }, [activeData]);
 
   const toggleSwitch = async (value: boolean) => {
     setChecked(value);
@@ -31,7 +29,7 @@ export default function ActiveStatusSwitch() {
     }
   };
 
-  if (isLoading) return <p>Loading...</p>;
+  if (!isLoading) return <p>Loading...</p>;
 
   return (
     <div

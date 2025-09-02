@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,6 +11,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -28,7 +30,8 @@ export default function AllDrivers() {
   const { data, isLoading } = useAllDriversQuery(undefined);
   const [updateApprovalStatus] = useUpdateDriverApprovalStatusMutation();
 
-  if (isLoading) return <p>Loading drivers...</p>;
+  if (isLoading)
+    return <Skeleton className="h-[20px] w-[100px] rounded-full" />;
 
   const handleChangeApprovalStatus = async (id: string, status: string) => {
     const newApprovalStatus = status === "approved" ? "pending" : "approved";

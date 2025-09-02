@@ -8,6 +8,7 @@ export const driverApi = baseApi.injectEndpoints({
         method: "POST",
         data: driverInfo,
       }),
+      invalidatesTags: ["DRIVER"],
     }),
 
     register: builder.mutation({
@@ -19,10 +20,10 @@ export const driverApi = baseApi.injectEndpoints({
     }),
 
     activeStatus: builder.mutation({
-      query: (activeData) => ({
+      query: (isOnlineStatus) => ({
         url: "/driver/status",
         method: "PATCH",
-        data: activeData,
+        data: isOnlineStatus,
       }),
       invalidatesTags: ["DRIVER"],
     }),

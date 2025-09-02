@@ -27,8 +27,6 @@ export default function Profile() {
   const { data: driverInfo } = useDriverInfoQuery(undefined);
   const activeStatus = driverInfo?.data[0]?.isOnline;
 
-  console.log(activeStatus);
-
   const dispatch = useAppDispatch();
   const handleLogout = async () => {
     await logout(undefined);
