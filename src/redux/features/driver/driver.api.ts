@@ -19,11 +19,20 @@ export const driverApi = baseApi.injectEndpoints({
       }),
     }),
 
-    activeStatus: builder.mutation({
+    isOnlineStatus: builder.mutation({
       query: (isOnlineStatus) => ({
         url: "/driver/status",
         method: "PATCH",
         data: isOnlineStatus,
+      }),
+      invalidatesTags: ["DRIVER"],
+    }),
+
+    updateLocationStatus: builder.mutation({
+      query: (locationStatus) => ({
+        url: "/driver/location",
+        method: "PATCH",
+        data: locationStatus,
       }),
       invalidatesTags: ["DRIVER"],
     }),
@@ -51,5 +60,6 @@ export const {
   useVehicleRegisterMutation,
   useDriverInfoQuery,
   useEaringStatusQuery,
-  useActiveStatusMutation,
+  useIsOnlineStatusMutation,
+  useUpdateLocationStatusMutation,
 } = driverApi;

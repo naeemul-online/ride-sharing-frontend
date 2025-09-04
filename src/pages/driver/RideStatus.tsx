@@ -15,30 +15,21 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
-import { useActiveStatusMutation } from "@/redux/features/driver/driver.api";
+import {
+  useDriverInfoQuery,
+  useIsOnlineStatusMutation,
+  useUpdateLocationStatusMutation,
+} from "@/redux/features/driver/driver.api";
 import { useGetAvailableRideQuery } from "@/redux/features/ride/riders.api";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Car, MapPin, Power } from "lucide-react";
+import { MapPin, Power } from "lucide-react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-
-// Status update schema
-const statusSchema = z.object({
-  status: z.enum(["accept", "picked_up", "completed"], {
-    required_error: "Please select a status",
-  }),
-});
 
 // Online status schema
 const onlineStatusSchema = z.object({
@@ -56,18 +47,16 @@ const locationSchema = z.object({
   }),
 });
 
-type StatusFormData = z.infer<typeof statusSchema>;
 type OnlineStatusFormData = z.infer<typeof onlineStatusSchema>;
 type LocationFormData = z.infer<typeof locationSchema>;
 
 export default function DriverFeatures() {
   const { data, isLoading } = useGetAvailableRideQuery(undefined);
-  const [isOnlineActiveStatus] = useActiveStatusMutation();
+  const [isOnlineActiveStatus] = useIsOnlineStatusMutation();
+  const { data: driverInfo } = useDriverInfoQuery(undefined);
+  const [updateLocation] = useUpdateLocationStatusMutation();
 
-  // Status form
-  const statusForm = useForm<StatusFormData>({
-    resolver: zodResolver(statusSchema),
-  });
+  // available ride -> ride details ->
 
   // Online status form
   const onlineStatusForm = useForm<OnlineStatusFormData>({
@@ -88,44 +77,45 @@ export default function DriverFeatures() {
     },
   });
 
-  const onStatusSubmit = (data: StatusFormData) => {
-    // Mock API call
-    console.log("Status update:", data);
-    toast.success("Status Updated", {
-      description: `Your status has been updated to: ${data.status}`,
-    });
-
-    // Mock success response
-    setTimeout(() => {
-      toast.success("Status Updated", {
-        description: `Your status has been updated to: ${data.status}`,
+  useEffect(() => {
+    if (driverInfo?.data?.[0]?.isOnline !== undefined) {
+      onlineStatusForm.reset({
+        isOnline: driverInfo.data[0].isOnline,
       });
-    }, 1000);
-  };
+    }
+    locationForm.reset({
+      location: {
+        lat: driverInfo?.data?.[0]?.location?.lat,
+        lng: driverInfo?.data?.[0]?.location?.lng,
+      },
+    });
+  }, [driverInfo, onlineStatusForm, locationForm]);
 
+  /* Online Status Submit */
   const onOnlineStatusSubmit = async (data: OnlineStatusFormData) => {
     try {
       const toastId = toast.loading("Status updating...");
-      await isOnlineActiveStatus(data);
-      toast.success("Your status has been updated", { id: toastId });
+      await isOnlineActiveStatus(data).unwrap();
+      toast.success(
+        `Your status has been updated ${data.isOnline ? "Online" : "Offline"}`,
+        {
+          id: toastId,
+        }
+      );
     } catch (error) {
       console.log(error);
     }
   };
 
-  const onLocationSubmit = (data: LocationFormData) => {
-    // Mock API call
-    console.log("Location update:", data);
-    toast.success("Status Updated", {
-      description: `Your status has been updated to: ${data}`,
-    });
-
-    // Mock success response
-    setTimeout(() => {
-      toast.success("Status Updated", {
-        description: `Your status has been updated to: ${data}`,
-      });
-    }, 1000);
+  const onLocationSubmit = async (data: LocationFormData) => {
+    try {
+      const toastId = toast.loading("Status updating...");
+      await updateLocation(data).unwrap();
+      toast.success("You location updated successfully....", { id: toastId });
+    } catch (error) {
+      console.log(error);
+      toast.error("Something went wrong");
+    }
   };
 
   if (isLoading && !data) <Skeleton />;
@@ -143,63 +133,7 @@ export default function DriverFeatures() {
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-3">
-            {/* Status Update Card */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Car className="h-5 w-5 text-primary" />
-                  Ride Status
-                </CardTitle>
-                <CardDescription>
-                  Update your current ride status
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Form {...statusForm}>
-                  <form
-                    onSubmit={statusForm.handleSubmit(onStatusSubmit)}
-                    className="space-y-4"
-                  >
-                    <FormField
-                      control={statusForm.control}
-                      name="status"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Current Status</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select status" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="accept">
-                                Accept Ride
-                              </SelectItem>
-                              <SelectItem value="picked_up">
-                                Picked Up
-                              </SelectItem>
-                              <SelectItem value="completed">
-                                Completed
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button type="submit" className="w-full">
-                      Update Status
-                    </Button>
-                  </form>
-                </Form>
-              </CardContent>
-            </Card>
-
+          <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
             {/* Online Status Card */}
             <Card>
               <CardHeader>
@@ -318,50 +252,6 @@ export default function DriverFeatures() {
               </CardContent>
             </Card>
           </div>
-
-          {/* Mock Data Display */}
-          <Card className="mt-8">
-            <CardHeader>
-              <CardTitle>Current Driver State (Mock Data)</CardTitle>
-              <CardDescription>
-                This shows the current state that would be sent to your backend
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4 md:grid-cols-3">
-                <div className="p-4 bg-muted rounded-lg">
-                  <h4 className="font-semibold mb-2">Status</h4>
-                  <code className="text-sm">
-                    {JSON.stringify(
-                      { status: statusForm.watch("status") || "not_set" },
-                      null,
-                      2
-                    )}
-                  </code>
-                </div>
-                <div className="p-4 bg-muted rounded-lg">
-                  <h4 className="font-semibold mb-2">Online Status</h4>
-                  <code className="text-sm">
-                    {JSON.stringify(
-                      { isOnline: onlineStatusForm.watch("isOnline") },
-                      null,
-                      2
-                    )}
-                  </code>
-                </div>
-                <div className="p-4 bg-muted rounded-lg">
-                  <h4 className="font-semibold mb-2">Location</h4>
-                  <code className="text-sm">
-                    {JSON.stringify(
-                      { location: locationForm.watch("location") },
-                      null,
-                      2
-                    )}
-                  </code>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </main>
     </div>

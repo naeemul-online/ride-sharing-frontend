@@ -26,22 +26,13 @@ export default function HeroSection() {
               them.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
-              <Link to="/ride-request">
-                <Button
-                  size="lg"
-                  className="bg-primary hover:shadow-primary text-lg px-8 py-3 cursor-pointer"
-                >
-                  Book Your Ride
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
-              </Link>
               {userInfo?.data?.role === "driver" ? (
                 <>
                   <Link to="/vehicles">
                     <Button
                       size="lg"
                       variant="outline"
-                      className="text-lg px-8 py-3 cursor-pointer"
+                      className="text-lg px-8 py-3 cursor-pointer bg-primary hover:shadow-primary"
                     >
                       Add Your Vehicles
                     </Button>
@@ -49,6 +40,15 @@ export default function HeroSection() {
                 </>
               ) : (
                 <>
+                  <Link to="/ride-request">
+                    <Button
+                      size="lg"
+                      className="bg-primary hover:shadow-primary text-lg px-8 py-3 cursor-pointer"
+                    >
+                      Book Your Ride
+                      <ArrowRight className="ml-2 w-5 h-5" />
+                    </Button>
+                  </Link>
                   <Link to="/register">
                     <Button
                       size="lg"

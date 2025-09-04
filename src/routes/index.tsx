@@ -12,6 +12,7 @@ import VehicleRegistration from "@/pages/driver/VehiclesRegistration";
 import Home from "@/pages/Home";
 import RequestRidePage from "@/pages/rider/RequestRidePage";
 
+import RideDetailsPage from "@/pages/rider/RideDetailsPage";
 import type { TRole } from "@/types";
 import { generateRoutes } from "@/utils/generateRoute";
 import { withAuth } from "@/utils/withAuth";
@@ -32,6 +33,7 @@ export const router = createBrowserRouter([
       { path: "contact", Component: Contact },
       { path: "faq", Component: Features },
       { path: "ride-request", Component: RequestRidePage },
+      { path: "/ride-details/:rideId", Component: RideDetailsPage },
       { path: "/vehicles", Component: VehicleRegistration },
     ],
   },

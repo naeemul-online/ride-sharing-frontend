@@ -44,6 +44,7 @@ const RideBooking = () => {
   const [rideRequest] = useRideRequestMutation();
 
   const [fareEstimate, setFareEstimate] = useState(0);
+  console.log(fareEstimate);
 
   const navigate = useNavigate();
 
@@ -67,10 +68,11 @@ const RideBooking = () => {
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
-      const res = await rideRequest(data).unwrap();
+      const res = await rideRequest(data);
       setFareEstimate(res?.data?.data?.fare);
     } catch (error) {
-      toast.warning("Something went wrong");
+      console.log(error);
+      toast.error("Something went wrong");
     }
   };
 
