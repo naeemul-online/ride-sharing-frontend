@@ -43,6 +43,32 @@ export const ridersApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["RIDER"],
     }),
+
+    rideAcceptStatus: builder.mutation({
+      query: ({ status, id }) => ({
+        url: `rides/${id}/accept`,
+        method: "PATCH",
+        data: { status },
+      }),
+      invalidatesTags: ["RIDER"],
+    }),
+
+    ridePickupStatus: builder.mutation({
+      query: ({ status, id }) => ({
+        url: `rides/${id}/status`,
+        method: "PATCH",
+        data: { status },
+      }),
+      invalidatesTags: ["RIDER"],
+    }),
+
+    getRideById: builder.query({
+      query: (id: string) => ({
+        url: `/rides/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["RIDER"],
+    }),
   }),
 });
 
@@ -52,4 +78,7 @@ export const {
   useGetRideHistoryQuery,
   useGetCurrentRideQuery,
   useGetAvailableRideQuery,
+  useGetRideByIdQuery,
+  useRideAcceptStatusMutation,
+  useRidePickupStatusMutation,
 } = ridersApi;

@@ -26,7 +26,19 @@ export function LoginForm({
   const form = useForm({
     //! For development only
     defaultValues: {
-      email: "naeemul.online@gmail.com",
+      /* Admin */
+
+      // email: "super.online@gmail.com",
+      // password: "Admin@1234",
+
+      /* Driver */
+
+      // email: "driver@gmail.com",
+      // password: "Army@1234",
+
+      /* Rider */
+
+      email: "rider@gmail.com",
       password: "Army@1234",
     },
   });
