@@ -7,6 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useDriverInfoQuery } from "@/redux/features/driver/driver.api";
+import type { Driver } from "@/types/driver.type";
 export default function VehicleStatus() {
   const { data: driverInfo } = useDriverInfoQuery(undefined);
 
@@ -31,7 +32,7 @@ export default function VehicleStatus() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {driverInfo?.data?.map((item, index) => (
+                {driverInfo?.data?.map((item: Driver, index: number) => (
                   <TableRow key={index}>
                     <TableCell className="font-medium ">{index + 1}</TableCell>
                     <TableCell className="font-medium ">

@@ -9,8 +9,17 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import type { ReactNode } from "react";
 
-export default function ConfirmModal({ children, onConfirm }) {
+type ConfirmModalProps = {
+  children: ReactNode;
+  onConfirm: () => void | Promise<void>;
+};
+
+export default function ConfirmModal({
+  children,
+  onConfirm,
+}: ConfirmModalProps) {
   const handleConfirm = () => {
     onConfirm();
   };

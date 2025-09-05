@@ -19,38 +19,37 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
-
 import z from "zod";
 
-// todo: navigate with res -> show modal with fare -> tracking page
+// Define your schema
 const formSchema = z.object({
   pickup: z.object({
     address: z.string().min(1, { message: "Pickup location is required." }),
     coordinates: z.object({
-      lat: z.number().default(0),
-      lng: z.number().default(0),
+      lat: z.number().min(-90).max(90, { message: "Invalid latitude" }), // Ensuring lat is within the range
+      lng: z.number().min(-180).max(180, { message: "Invalid longitude" }), // Ensuring lng is within the range
     }),
   }),
   destination: z.object({
     address: z.string().min(1, { message: "Destination is required." }),
     coordinates: z.object({
-      lat: z.number().default(0),
-      lng: z.number().default(0),
+      lat: z.number().min(-90).max(90, { message: "Invalid latitude" }), // Ensuring lat is within the range
+      lng: z.number().min(-180).max(180, { message: "Invalid longitude" }), // Ensuring lng is within the range
     }),
   }),
 });
 
+type FormData = z.infer<typeof formSchema>;
+
 const RideBooking = () => {
   const [rideRequest] = useRideRequestMutation();
-
   const [fareEstimate, setFareEstimate] = useState(0);
-  console.log(fareEstimate);
 
   const navigate = useNavigate();
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  // Use the schema type to ensure type safety
+  const tripForm = useForm<FormData>({
     resolver: zodResolver(formSchema),
-
     defaultValues: {
       pickup: {
         address: "Farmgate",
@@ -64,9 +63,7 @@ const RideBooking = () => {
     mode: "onSubmit",
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+  const onSubmit = async (data: FormData) => {
     try {
       const res = await rideRequest(data);
       setFareEstimate(res?.data?.data?.fare);
@@ -103,14 +100,13 @@ const RideBooking = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)}>
+                <Form {...tripForm}>
+                  <form onSubmit={tripForm.handleSubmit(onSubmit)}>
                     <div className="space-y-8">
                       {/* Pickup Location */}
                       <div>
-                        {/* Location Inputs */}
                         <FormField
-                          control={form.control}
+                          control={tripForm.control}
                           name="pickup.address"
                           render={({ field }) => (
                             <FormItem>
@@ -135,7 +131,7 @@ const RideBooking = () => {
                       {/* Destination */}
                       <div>
                         <FormField
-                          control={form.control}
+                          control={tripForm.control}
                           name="destination.address"
                           render={({ field }) => (
                             <FormItem>
