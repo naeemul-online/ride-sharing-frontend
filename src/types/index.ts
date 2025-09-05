@@ -10,3 +10,10 @@ export interface ISidebarItem {
     component: ComponentType;
   }[];
 }
+
+export interface ApiErrorResponse {
+  data: {
+    message: string;
+    success: boolean;
+  };
+}

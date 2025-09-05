@@ -9,6 +9,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useRideCancelStatusMutation } from "@/redux/features/ride/riders.api";
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { ReactNode } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
@@ -30,7 +31,12 @@ const feedbackSchema = z.object({
     .max(50),
 });
 
-export default function FeedBackModal({ children, id }) {
+type FeedbackModalProps = {
+  children: ReactNode;
+  id: string;
+};
+
+export default function FeedBackModal({ children, id }: FeedbackModalProps) {
   const [cancelRide] = useRideCancelStatusMutation();
 
   const form = useForm<z.infer<typeof feedbackSchema>>({

@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetAvailableRideQuery } from "@/redux/features/ride/riders.api";
+import type { Ride } from "@/types/ride.type";
 import { DollarSign, User } from "lucide-react";
 import { Link } from "react-router";
 
@@ -25,7 +26,7 @@ export default function AvailableRide() {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {availableRides?.data?.map((ride) => (
+            {availableRides?.data?.map((ride: Ride) => (
               <Link
                 key={ride._id}
                 to={`/ride-details/${ride._id}`}

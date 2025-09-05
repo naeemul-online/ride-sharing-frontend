@@ -11,7 +11,20 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
-export default function AlertDialogBlockUnblock({ children, onConfirm, user }) {
+type User = {
+  id: string;
+  status: "active" | "blocked";
+};
+
+type AlertDialogBlockUnblock = {
+  user: User;
+  onConfirm: () => void | Promise<void>;
+};
+
+export default function AlertDialogBlockUnblock({
+  onConfirm,
+  user,
+}: AlertDialogBlockUnblock) {
   const handleUpdate = () => {
     onConfirm();
   };

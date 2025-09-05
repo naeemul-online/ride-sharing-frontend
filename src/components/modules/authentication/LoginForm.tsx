@@ -8,14 +8,22 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import config from "@/config";
 
 import { cn } from "@/lib/utils";
 import { useLoginMutation } from "@/redux/features/auth/auth.api";
+import isApiErrorResponse from "@/utils/errorGurd";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-import { type FieldValues, type SubmitHandler, useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
+import z from "zod";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const loginFormSchema = z.object({
+  email: z.email(),
+  password: z.string().min(8, { error: "Password is too short" }),
+});
 
 export function LoginForm({
   className,
@@ -23,41 +31,41 @@ export function LoginForm({
 }: React.HTMLAttributes<HTMLDivElement>) {
   const [login] = useLoginMutation();
   const navigate = useNavigate();
-  const form = useForm({
-    //! For development only
+
+  const form = useForm<z.infer<typeof loginFormSchema>>({
+    resolver: zodResolver(loginFormSchema),
     defaultValues: {
       /* Admin */
-
       // email: "super.online@gmail.com",
       // password: "Admin@1234",
-
       /* Driver */
-
       // email: "driver@gmail.com",
       // password: "Army@1234",
-
       /* Rider */
-
       email: "rider@gmail.com",
       password: "Army@1234",
+      // email: "",
+      // password: "",
     },
   });
 
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    // console.log(data);
+  const onSubmit: SubmitHandler<z.infer<typeof loginFormSchema>> = async (
+    data
+  ) => {
     try {
       const res = await login(data).unwrap();
+
       if (res.success) {
         toast.success("Logged in successfully");
         navigate("/");
       }
-    } catch (err) {
-      if (err) {
-        toast.error(err?.data?.message);
-      }
-      if (err.data.message === "User is not verified") {
-        toast.error("Your account is not verified");
-        navigate("/verify", { state: data.email });
+    } catch (error) {
+      if (isApiErrorResponse(error)) {
+        // TypeScript now knows that `error` has `data` and `message`
+        toast.error(error.data.message);
+      } else {
+        // Handle other types of errors, like network errors
+        toast.error("An unexpected error occurred");
       }
     }
   };
@@ -110,7 +118,7 @@ export function LoginForm({
               )}
             />
 
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full cursor-pointer">
               Login
             </Button>
           </form>
@@ -121,16 +129,6 @@ export function LoginForm({
             Or continue with
           </span>
         </div>
-
-        {/*//* http://localhost:5000/api/v1/auth/google */}
-        <Button
-          onClick={() => window.open(`${config.baseUrl}/auth/google`)}
-          type="button"
-          variant="outline"
-          className="w-full cursor-pointer"
-        >
-          Login with Google
-        </Button>
       </div>
       <div className="text-center text-sm">
         Don&apos;t have an account?{" "}

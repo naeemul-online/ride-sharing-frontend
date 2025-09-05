@@ -28,6 +28,7 @@ import {
   useRideAcceptStatusMutation,
   useRidePickupStatusMutation,
 } from "@/redux/features/ride/riders.api";
+import isApiErrorResponse from "@/utils/errorGurd";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ArrowLeft,
@@ -46,9 +47,7 @@ import z from "zod";
 
 // Status update schema
 const statusSchema = z.object({
-  status: z.enum(["accept", "picked_up", "completed"], {
-    required_error: "Please select a status",
-  }),
+  status: z.enum(["accept", "picked_up", "completed"]),
 });
 
 type StatusFormData = z.infer<typeof statusSchema>;
@@ -56,10 +55,8 @@ type StatusFormData = z.infer<typeof statusSchema>;
 const RideDetails = () => {
   const { rideId } = useParams();
   const { data: rideData, isLoading, isError } = useGetRideByIdQuery(rideId!);
-  const [acceptRide, { error: acceptRideError }] =
-    useRideAcceptStatusMutation();
-  const [pickedUpRide, { error: pickedUpRideError }] =
-    useRidePickupStatusMutation();
+  const [acceptRide] = useRideAcceptStatusMutation();
+  const [pickedUpRide] = useRidePickupStatusMutation();
 
   // Status form
   const statusForm = useForm<StatusFormData>({
@@ -79,7 +76,6 @@ const RideDetails = () => {
   }
 
   const onStatusSubmit = async (data: StatusFormData) => {
-    console.log(data);
     try {
       const res = await pickedUpRide({
         status: data.status,
@@ -90,8 +86,14 @@ const RideDetails = () => {
       } else {
         toast.warning(res.message);
       }
-    } catch {
-      toast.error(pickedUpRideError?.data?.message);
+    } catch (error) {
+      if (isApiErrorResponse(error)) {
+        // TypeScript now knows that `error` has `data` and `message`
+        toast.error(error.data.message);
+      } else {
+        // Handle other types of errors, like network errors
+        toast.error("An unexpected error occurred");
+      }
     }
   };
 
@@ -106,8 +108,14 @@ const RideDetails = () => {
       } else {
         toast.warning(result.message);
       }
-    } catch {
-      toast.error(acceptRideError?.data?.message);
+    } catch (error) {
+      if (isApiErrorResponse(error)) {
+        // TypeScript now knows that `error` has `data` and `message`
+        toast.error(error.data.message);
+      } else {
+        // Handle other types of errors, like network errors
+        toast.error("An unexpected error occurred");
+      }
     }
   };
 
