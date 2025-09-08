@@ -23,6 +23,7 @@ import { useRegisterMutation } from "@/redux/features/auth/auth.api";
 import isApiErrorResponse from "@/utils/errorGurd";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
@@ -58,7 +59,7 @@ export function RegisterForm({
 }: React.HTMLAttributes<HTMLDivElement>) {
   const navigate = useNavigate();
 
-  const [register] = useRegisterMutation();
+  const [register, { isLoading }] = useRegisterMutation();
 
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
@@ -196,13 +197,13 @@ export function RegisterForm({
             />
 
             <Button type="submit" className="w-full">
-              Submit
+              {isLoading ? <Loader2 /> : "Submit"}
             </Button>
           </form>
         </Form>
       </div>
 
-      <div className="text-center text-sm">
+      <div className="text-center text-sm cursor-pointer">
         Already have an account?{" "}
         <Link to="/login" className="underline underline-offset-4">
           Login

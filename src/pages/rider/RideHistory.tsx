@@ -12,7 +12,6 @@ import {
 import { useGetRideHistoryQuery } from "@/redux/features/ride/riders.api";
 
 export default function RideHistory() {
-  console.log("data");
   const { data, isLoading } = useGetRideHistoryQuery(undefined);
 
   return (

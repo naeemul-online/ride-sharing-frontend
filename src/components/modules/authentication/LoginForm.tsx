@@ -13,13 +13,13 @@ import { cn } from "@/lib/utils";
 import { useLoginMutation } from "@/redux/features/auth/auth.api";
 import isApiErrorResponse from "@/utils/errorGurd";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 import z from "zod";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const loginFormSchema = z.object({
   email: z.email(),
   password: z.string().min(8, { error: "Password is too short" }),
@@ -29,7 +29,7 @@ export function LoginForm({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-  const [login] = useLoginMutation();
+  const [login, { isLoading }] = useLoginMutation();
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof loginFormSchema>>({
@@ -42,10 +42,10 @@ export function LoginForm({
       // email: "driver@gmail.com",
       // password: "Army@1234",
       /* Rider */
-      email: "rider@gmail.com",
-      password: "Army@1234",
-      // email: "",
-      // password: "",
+      // email: "rider@gmail.com",
+      // password: "Army@1234",
+      email: "",
+      password: "",
     },
   });
 
@@ -119,7 +119,7 @@ export function LoginForm({
             />
 
             <Button type="submit" className="w-full cursor-pointer">
-              Login
+              {isLoading ? <Loader2 /> : "Login"}
             </Button>
           </form>
         </Form>

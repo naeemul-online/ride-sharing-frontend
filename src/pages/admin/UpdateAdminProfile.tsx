@@ -18,6 +18,7 @@ import {
 } from "@/redux/features/auth/auth.api";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -49,7 +50,7 @@ export default function UpdateAdminProfile({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   const { data: userInfo } = useUserInfoQuery(undefined);
-  const [updateProfile] = useUpdateProfileMutation();
+  const [updateProfile, { isLoading }] = useUpdateProfileMutation();
 
   //   console.log(userInfo?.data?._id);
 
@@ -169,8 +170,8 @@ export default function UpdateAdminProfile({
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">
-              Update
+            <Button type="submit" className="w-full cursor-pointer">
+              {isLoading ? <Loader2 /> : "Update"}
             </Button>
           </form>
         </Form>
